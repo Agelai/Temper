@@ -164,49 +164,6 @@
                 resultElement.textContent = 'Не тупи, вводи корректную температуру от 8 до -55 °C';
             }
         }
-       // Функция для получения погоды в Алдане
-async function fetchWeather() {
-    const url = 'https://weather-api167.p.rapidapi.com/api/weather/forecast?place=Aldan%2CRU&zip=678900&cnt=3&units=standard&type=three_hour&mode=json&lang=ru';
-    const options = {
-        method: 'GET',
-        headers: {
-            'x-rapidapi-key': 'fc9df90981msh71ed46052364decp16d8c2jsnf343407cb161',
-            'x-rapidapi-host': 'weather-api167.p.rapidapi.com',
-            Accept: 'application/json'
-        }
-    };
-
-    try {
-        const response = await fetch(url, options);
-        const result = await response.json(); // Парсим JSON
-        displayWeather(result);
-    } catch (error) {
-        console.error(error);
-        document.getElementById('weather').innerHTML = '<h2>Прогноз в Алдане</h2><p>Не удалось загрузить данные о погоде.</p>';
-    }
-}
-
-// Функция для получения погоды в Алдане
-async function fetchWeather() {
-    const url = 'https://weather-api167.p.rapidapi.com/api/weather/forecast?place=Aldan%2CRU&zip=678900&cnt=3&units=standard&type=three_hour&mode=json&lang=ru';
-    const options = {
-        method: 'GET',
-        headers: {
-            'x-rapidapi-key': 'fc9df90981msh71ed46052364decp16d8c2jsnf343407cb161',
-            'x-rapidapi-host': 'weather-api167.p.rapidapi.com',
-            Accept: 'application/json'
-        }
-    };
-
-    try {
-        const response = await fetch(url, options);
-        const result = await response.json(); // Парсим JSON
-        displayWeather(result);
-    } catch (error) {
-        console.error(error);
-        document.getElementById('weather').innerHTML = '<h2>Прогноз в Алдане</h2><p>Не удалось загрузить данные о погоде.</p>';
-    }
-}
 
  // Функция для получения погоды в Алдане
  async function fetchWeather() {
