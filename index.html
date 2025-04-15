@@ -165,45 +165,87 @@
             }
         }
 
- // Функция для получения погоды в Алдане
- async function fetchWeather() {
-            const url = 'https://yahoo-weather5.p.rapidapi.com/weather?location=Aldan%2C%20Sakha%20Republic%2C%20Russia&format=json&u=f'
-            const options = {
-                method: 'GET',
-                headers: {
-                    'x-rapidapi-key': 'fc9df90981msh71ed46052364decp16d8c2jsnf343407cb161',
-                    'x-rapidapi-host': 'yahoo-weather5.p.rapidapi.com'
-                }
-            };
+ // Функция для получения погоды с кэшированием
+        async function fetchWeather() {
+            const now = Date.now();
+            const weatherElement = document.getElementById('weather');
+            
+            // Проверяем кэш
+            if (weatherCache.data && now - weatherCache.timestamp < weatherCache.ttl) {
+                displayWeather(weatherCache.data);
+                return;
+            }
 
             try {
+                const url = 'https://yahoo-weather5.p.rapidapi.com/weather?location=Aldan%2C%20Sakha%20Republic%2C%20Russia&format=json&u=c';
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        'x-rapidapi-key': 'fc9df90981msh71ed46052364decp16d8c2jsnf343407cb161',
+                        'x-rapidapi-host': 'yahoo-weather5.p.rapidapi.com'
+                    }
+                };
+
                 const response = await fetch(url, options);
+                
+                if (response.status === 429) {
+                    throw new Error('Слишком много запросов. Попробуйте позже.');
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Ошибка при получении данных');
+                }
+
                 const result = await response.json();
+                
+                // Сохраняем в кэш
+                weatherCache.data = result;
+                weatherCache.timestamp = now;
+                
                 displayWeather(result);
             } catch (error) {
-                console.error(error);
-                document.getElementById('weather').innerHTML = '<h2>Прогноз в Алдане</h2><p>Не удалось загрузить данные о погоде.</p>';
+                console.error('Ошибка:', error);
+                weatherElement.innerHTML = `
+                    <p class="error">Не удалось загрузить погоду</p>
+                    <p>${error.message || 'Попробуйте обновить страницу позже'}</p>
+                `;
+                
+                // Показываем кэшированные данные, если есть
+                if (weatherCache.data) {
+                    weatherElement.innerHTML += '<p>Используются ранее сохраненные данные:</p>';
+                    displayWeather(weatherCache.data);
+                }
             }
         }
 
         // Функция для отображения погоды
         function displayWeather(data) {
             const weatherElement = document.getElementById('weather');
-            if (data && data.current_observation && data.current_observation.condition) {
-                const temperature = data.current_observation.condition.temperature; // Температура в Фаренгейтах
-                const temperatureCelsius = ((temperature - 32) * 5 / 9).toFixed(0); // Конвертируем в Цельсии
-                const description = data.current_observation.condition.text;
+            
+            try {
+                if (data?.current_observation?.condition) {
+                    const tempF = data.current_observation.condition.temperature;
+                    const tempC = ((tempF - 32) * 5/9).toFixed(1);
+                    const text = data.current_observation.condition.text;
+                    
+                    weatherElement.innerHTML = `
+                        <p>Текущая температура: <strong>${tempC}°C</strong></p>
+                        <p>Состояние: ${text}</p>
+                        <p>Обновлено: ${new Date().toLocaleTimeString()}</p>
+                    `;
+                } else {
+                    throw new Error('Некорректные данные о погоде');
+                }
+            } catch (e) {
                 weatherElement.innerHTML = `
-                    <h2>Прогноз погоды по данным www.yahoo.com</h2>
-                    <p>Температура в Алдане: ${temperatureCelsius} °C</p>
-                    <p>Как сделать Лениникий мне было лень разбираться, поэтому если не нравится ${temperatureCelsius}°C, пиздуй смотри на градусник!</p>
+                    <p class="error">Ошибка отображения погоды</p>
+                    <p>${e.message}</p>
                 `;
-            } else {
-                weatherElement.innerHTML = '<h2>Прогноз в Алдане</h2><p>Данные о погоде недоступны.</p>';
             }
         }
+
         // Загружаем погоду при открытии страницы
-        fetchWeather();
+        document.addEventListener('DOMContentLoaded', fetchWeather);
     </script>
 </body>
 </html>
