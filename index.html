@@ -165,15 +165,15 @@
             }
         }
 
-// Функция для получения погоды в Алдане
-        async function fetchWeather() {
-            const url = 'https://yahoo-weather5.p.rapidapi.com/weather?location=Aldan&format=json&u=f';
-            const options = {
-                method: 'GET',
-                headers: {
-                    'x-rapidapi-key': 'fc9df90981msh71ed46052364decp16d8c2jsnf343407cb161',
-                    'x-rapidapi-host': 'yahoo-weather5.p.rapidapi.com'
-                }
+ // Функция для получения погоды в Алдане
+  async function fetchWeather() {
+             const url = 'https://yahoo-weather5.p.rapidapi.com/weather?location=Aldan%2C%20Sakha%20Republic%2C%20Russia&format=json&u=f'
+             const options = {
+                 method: 'GET',
+                 headers: {
+                     'x-rapidapi-key': 'fc9df90981msh71ed46052364decp16d8c2jsnf343407cb161',
+                     'x-rapidapi-host': 'yahoo-weather5.p.rapidapi.com'
+                 }
             };
 
             try {
@@ -194,9 +194,9 @@
                 const temperatureCelsius = ((temperature - 32) * 5 / 9).toFixed(1); // Конвертируем в Цельсии
                 const description = data.current_observation.condition.text;
                 weatherElement.innerHTML = `
-                    <h2>Прогноз в Алдане</h2>
-                    <p>Температура: ${temperatureCelsius} °C</p>
-                    <p>Погода: ${description}</p>
+                     <h2>Прогноз погоды по данным www.yahoo.com</h2>
+                     <p>Температура в Алдане: ${temperatureCelsius} °C</p>
+                     <p>Как сделать Лениникий мне было лень разбираться, поэтому если не нравится ${temperatureCelsius}°C, пиздуй смотри на градусник!</p>
                 `;
             } else {
                 weatherElement.innerHTML = '<h2>Прогноз в Алдане</h2><p>Данные о погоде недоступны.Привышен лимит запросов Api</p>';
