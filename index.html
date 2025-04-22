@@ -191,7 +191,7 @@
             const weatherElement = document.getElementById('weather');
             if (data && data.current_observation && data.current_observation.condition) {
                 const temperature = data.current_observation.condition.temperature; // Температура в Фаренгейтах
-                const temperatureCelsius = ((temperature - 32) * 5 / 9).toFixed(1); // Конвертируем в Цельсии
+                const temperatureCelsius = ((temperature - 32) * 5 / 9).toFixed(0); // Конвертируем в Цельсии
                 const description = data.current_observation.condition.text;
                 weatherElement.innerHTML = `
                      <h2>Прогноз погоды по данным www.yahoo.com</h2>
